@@ -1,7 +1,10 @@
 package com.vinicius.usuario.controller;
 
 import com.vinicius.usuario.business.UsuarioService;
+import com.vinicius.usuario.business.dto.EnderecoDTO;
+import com.vinicius.usuario.business.dto.TelefoneDTO;
 import com.vinicius.usuario.business.dto.UsuarioDTO;
+import com.vinicius.usuario.infraestructure.entity.Endereco;
 import com.vinicius.usuario.infraestructure.entity.Usuario;
 import com.vinicius.usuario.infraestructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<Usuario> buscaUsuarioPorEmail(@RequestParam("email") String email) {
+    public ResponseEntity<UsuarioDTO> buscaUsuarioPorEmail(@RequestParam("email") String email) {
         return ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
     }
 
@@ -45,4 +48,26 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
+    // temos um metodo Put para atualização dos dados escolhidos pelo usuario, requisitando UsuarioDTO
+    // e também o token adquirido no login para indicar na service qual usuário vai atualizar os dados.
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizaDadosUsuario(@RequestBody UsuarioDTO dto,
+                                                           @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(usuarioService.atualizaDadosUsuario(token, dto));
+
+    }
+
+    @PutMapping("/endereco")
+    public ResponseEntity<EnderecoDTO> atualizaEndereco(@RequestBody EnderecoDTO dto,
+                                                        @RequestParam("id") Long id) {
+
+        return ResponseEntity.ok(usuarioService.atualizaEndereco(id, dto));
+    }
+
+    @PutMapping("/telefone")
+    public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO dto,
+                                                        @RequestParam("id") Long id) {
+
+        return ResponseEntity.ok(usuarioService.atualizaTelefone(id, dto));
+    }
 }
